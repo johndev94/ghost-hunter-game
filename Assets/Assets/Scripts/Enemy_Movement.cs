@@ -1,3 +1,4 @@
+using UnityEditor.Tilemaps;
 using UnityEngine;
 
 public class Enemy_Movement : MonoBehaviour
@@ -21,21 +22,12 @@ public class Enemy_Movement : MonoBehaviour
     {
         if (isChasing)
         {
-            // Check if the player is to the right of the enemy and the enemy is facing left
-            if(player.position.x > transform.position.x && facingDirection == -1)
-            {
-                // Flip the enemy sprite to face the player
-                transform.localScale = new Vector3(1, 1, 1);
-                facingDirection = 1;
-            }
-            // Check if the player is to the left of the enemy and the enemy is facing right
-            else if(player.position.x < transform.position.x && facingDirection == 1)
-            {
-                // Flip the enemy sprite to face the player
-                transform.localScale = new Vector3(-1, 1, 1);
-                facingDirection = -1;
-
-            }
+            // Check if the player is to the right of the enemy and the enemy is facing left or visa versa, then flip the enemy
+            if(player.position.x < transform.position.x && facingDirection == 1 ||
+                player.position.x > transform.position.x && facingDirection == -1){
+                    Flip();
+            };
+            
             // Gets the difference between the player's position and the enemy's position, then normalizes it.
             Vector2 direction = (player.position - transform.position).normalized;
             // So the enemy moves towards the player, we multiply the normalized direction by a speed value
@@ -44,6 +36,12 @@ public class Enemy_Movement : MonoBehaviour
         
     }
 
+    // Flip the enemy sprite to face the player
+    private void Flip()
+    {
+        facingDirection *= -1;
+        transform.localScale = new Vector3(facingDirection, 1, 1);
+    }
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.tag == "Player")
@@ -66,3 +64,23 @@ public class Enemy_Movement : MonoBehaviour
         }
     }
 }
+
+
+
+
+
+
+// Check if the player is to the right of the enemy and the enemy is facing left
+            // if(player.position.x > transform.position.x && facingDirection == -1)
+            // {
+            //     // Flip the enemy sprite to face the player
+            //     transform.localScale = new Vector3(1, 1, 1);
+            //     facingDirection = 1;
+            // }
+            // // Check if the player is to the left of the enemy and the enemy is facing right
+            // else if(player.position.x < transform.position.x && facingDirection == 1)
+            // {
+            //     // Flip the enemy sprite to face the player
+            //     transform.localScale = new Vector3(-1, 1, 1);
+            //     facingDirection = -1;
+            // }
