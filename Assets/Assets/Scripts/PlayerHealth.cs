@@ -61,6 +61,7 @@ public class PlayerHealth : MonoBehaviour
     // Optional: Handle player death
     void Die()
     {
+        gameObject.SetActive(false);  // Disable the player object
         UnityEngine.Debug.Log("Player has died!");
         // Add logic for what happens when the player dies (e.g., respawn or end game)
     }

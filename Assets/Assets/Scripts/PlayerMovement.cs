@@ -35,7 +35,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // Apply velocity
-        rb.velocity = new Vector2(horizontal, vertical) * speed;
+        rb.linearVelocity = new Vector2(horizontal, vertical) * speed;
     }
 
     // Method to flip the character
