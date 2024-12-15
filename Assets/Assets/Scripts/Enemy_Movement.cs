@@ -5,6 +5,7 @@ public class Enemy_Movement : MonoBehaviour
     private Rigidbody2D rb;
     private Transform player;
 
+    private int facingDirection = 1;
     private float speed = 1.2f;
     public bool isChasing = false;
 
@@ -20,6 +21,21 @@ public class Enemy_Movement : MonoBehaviour
     {
         if (isChasing)
         {
+            // Check if the player is to the right of the enemy and the enemy is facing left
+            if(player.position.x > transform.position.x && facingDirection == -1)
+            {
+                // Flip the enemy sprite to face the player
+                transform.localScale = new Vector3(1, 1, 1);
+                facingDirection = 1;
+            }
+            // Check if the player is to the left of the enemy and the enemy is facing right
+            else if(player.position.x < transform.position.x && facingDirection == 1)
+            {
+                // Flip the enemy sprite to face the player
+                transform.localScale = new Vector3(-1, 1, 1);
+                facingDirection = -1;
+
+            }
             // Gets the difference between the player's position and the enemy's position, then normalizes it.
             Vector2 direction = (player.position - transform.position).normalized;
             // So the enemy moves towards the player, we multiply the normalized direction by a speed value
@@ -33,7 +49,10 @@ public class Enemy_Movement : MonoBehaviour
         if (collision.gameObject.tag == "Player")
         {
             // Set the player reference to the player object
-            player = collision.transform;
+            if(player == null)
+            {
+                player = collision.transform;
+            }
             isChasing = true;
         }
     }
