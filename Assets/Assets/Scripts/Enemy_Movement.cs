@@ -1,14 +1,16 @@
-using UnityEditor.Tilemaps;
+using System.Diagnostics;
+using System.Globalization;
 using UnityEngine;
 
 public class Enemy_Movement : MonoBehaviour
 {
     private Rigidbody2D rb;
     private Transform player;
+    private EnemyState enemyState;
 
     private int facingDirection = 1;
     private float speed = 1.2f;
-    public bool isChasing = false;
+
     public Animator anim;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -16,12 +18,17 @@ public class Enemy_Movement : MonoBehaviour
     {
         // This auto connects rb to the Rigidbody2D component attached to the GameObject, useful for spawning enemies
         rb = GetComponent<Rigidbody2D>();
+        anim = GetComponent<Animator>();
+
+        // Set the enemy state to idle
+        ChangeState(EnemyState.Idle);
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (isChasing)
+        // Check if the player is in the trigger area
+        if (enemyState == EnemyState.Chasing)
         {
             // Check if the player is to the right of the enemy and the enemy is facing left or visa versa, then flip the enemy
             if(player.position.x < transform.position.x && facingDirection == 1 ||
@@ -58,22 +65,63 @@ public class Enemy_Movement : MonoBehaviour
             {
                 player = collision.transform;
             }
-            isChasing = true;
+
+            // Change the enemy state to chasing
+            ChangeState(EnemyState.Chasing);
+
+            // Test what the enemy state is on enter
+            UnityEngine.Debug.Log("Enemy state on trigger: " + enemyState);
         }
+
     }
 
     private void OnTriggerExit2D(Collider2D collision)
     {
         if (collision.gameObject.tag == "Player")
         {
-            isChasing = false;
+
             rb.linearVelocity = Vector2.zero; // Stop the enemy when player exits the trigger
+
+            // Change the enemy state to idle
+            ChangeState(EnemyState.Idle);
+
+            // Test what the enemy state is on exit
+            UnityEngine.Debug.Log("Enemy state on exit trigger: " + enemyState);
+
         }
+        
+    }
+
+
+    // This method changes activates one the enemy states changes and deactivates the other and creates a new state.. apparently useful later on
+    // this is called on OnTriggerEnter2D and OnTriggerExit2D
+    public void ChangeState(EnemyState newState)
+    {
+        // Exit the current animation state
+        if(enemyState == EnemyState.Idle){
+            anim.SetBool("isIdle", false);
+        }
+        else if(enemyState == EnemyState.Chasing){
+            anim.SetBool("isChasing", false);
+        }
+
+        // Updates the new enemy state
+        enemyState = newState;
+
+        // Update the new animation state, this checks what the new state is and activates the corresponding bool
+        if(enemyState == EnemyState.Idle){
+            anim.SetBool("isIdle", true);
+        }
+        else if(enemyState == EnemyState.Chasing){
+            anim.SetBool("isChasing", true);
     }
 }
-
-
-
+}
+public enum EnemyState
+{
+    Idle,
+    Chasing,
+}
 
 
 

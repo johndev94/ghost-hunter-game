@@ -5782,6 +5782,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1db0ef9e92544394d82ccac8ceb2d283, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemyState: 0
   isChasing: 0
   anim: {fileID: 1296383644}
 --- !u!58 &1296383643
@@ -5818,8 +5819,8 @@ CircleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.7923794, y: 0}
-  m_Radius: 3.3116455
+  m_Offset: {x: 1.9187596, y: 0}
+  m_Radius: 2.442723
 --- !u!95 &1296383644
 Animator:
   serializedVersion: 7
