@@ -2,21 +2,27 @@ using UnityEngine;
 
 public class Enemy_Movement : MonoBehaviour
 {
+    
+    
+    
+    public float attackRange = 2;
+    public float weaponRange = 1f;
+    public float damage = 10f;   
+    public float playerDetectRange = 5f;
+    public Animator anim;
+    // Attack-related variables
+    public Transform attackPoint; 
+    public LayerMask playerLayer; 
+    public Transform detectionPoint;
+    public float attackCooldown = 2f;
+
+    private float attackCooldownTimer = 0f;
+    private float speed = 1.2f;
+    private int facingDirection = 1;
     private Rigidbody2D rb;
     private Transform player;
     private EnemyState enemyState;
 
-    private int facingDirection = 1;
-    private float speed = 1.2f;
-    public float attackRange = 2;
-
-    public Animator anim;
-
-    // Attack-related variables
-    public Transform attackPoint;  // Ensure this is assigned in the inspector
-    public float weaponRange = 1f; // Ensure this is assigned in the inspector
-    public LayerMask playerLayer;  // Ensure this is assigned in the inspector
-    public float damage = 10f;     // Ensure this is assigned in the inspector
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -32,6 +38,11 @@ public class Enemy_Movement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        CheckForPlayer();
+        if(attackCooldownTimer > 0)
+        {
+            attackCooldownTimer -= Time.deltaTime;
+        }
         // Check if the player is in the trigger area
         if (player != null) // Ensure player reference is valid before moving
         {
@@ -48,14 +59,11 @@ public class Enemy_Movement : MonoBehaviour
 
     void Chase()
     {
-        if (Vector2.Distance(transform.position, player.transform.position) <= attackRange)
-        {
-            ChangeState(EnemyState.Attacking);
-        }
+        
 
         // Flip Logic
         // Check if the player is to the right of the enemy and the enemy is facing left or vice versa, then flip the enemy
-        else if (player.position.x < transform.position.x && facingDirection == 1 ||
+        if (player.position.x < transform.position.x && facingDirection == 1 ||
         player.position.x > transform.position.x && facingDirection == -1)
         {
             Flip();
@@ -82,40 +90,34 @@ public class Enemy_Movement : MonoBehaviour
         transform.localScale = new Vector3(facingDirection, 1, 1);
     }
 
-    private void OnTriggerStay2D(Collider2D collision)
+    private void CheckForPlayer()
     {
-        if (collision.gameObject.tag == "Player")
+
+        Collider2D[] hits = Physics2D.OverlapCircleAll(detectionPoint.position, playerDetectRange, playerLayer);
+
+        if(hits.Length > 0)
         {
-            // Set the player reference to the player object
-            if (player == null)
+            player = hits[0].transform;
+            // if player is in attack range and cooldown is ready
+            if (Vector2.Distance(transform.position, player.transform.position) <= attackRange && attackCooldownTimer <= 0)
             {
-                player = collision.transform;
+                attackCooldownTimer = attackCooldown;
+                ChangeState(EnemyState.Attacking);
             }
-
-            // Change the enemy state to chasing
-            ChangeState(EnemyState.Chasing);
-
+            else if (Vector2.Distance(transform.position, player.transform.position) > attackRange)
+            {
+                ChangeState(EnemyState.Chasing);
+            }
+        }
+        else{
+            // Stops enemy from drifting when player is out of range
+            rb.linearVelocity = Vector2.zero;
+            ChangeState(EnemyState.Idle);
+        }
             // Test what the enemy state is on enter
             UnityEngine.Debug.Log("Enemy state on trigger: " + enemyState);
-        }
     }
 
-    private void OnTriggerExit2D(Collider2D collision)
-    {
-        if (collision.gameObject.tag == "Player")
-        {
-            rb.linearVelocity = Vector2.zero; // Stop the enemy when player exits the trigger
-
-            // Change the enemy state to idle
-            ChangeState(EnemyState.Idle);
-
-            // Clear the player reference when the player leaves the trigger
-            player = null;
-
-            // Test what the enemy state is on exit
-            UnityEngine.Debug.Log("Enemy state on exit trigger: " + enemyState);
-        }
-    }
 
     public void Attack()
     {
