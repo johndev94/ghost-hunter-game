@@ -20,8 +20,8 @@ public class Enemy_Combat : MonoBehaviour
                 playerHealth.TakeDamage(damage);  
             }
 
+            // Get the current health of the player and display it
             float playerHealthCurrent = playerHealth.GetCurrentHealth();
-
             UnityEngine.Debug.Log("Player health: " + playerHealthCurrent);
 
 

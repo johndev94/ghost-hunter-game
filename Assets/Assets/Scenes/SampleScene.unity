@@ -5628,6 +5628,7 @@ GameObject:
   - component: {fileID: 1296383638}
   - component: {fileID: 1296383642}
   - component: {fileID: 1296383643}
+  - component: {fileID: 1296383644}
   m_Layer: 0
   m_Name: Torch_Goblin
   m_TagString: Enemy
@@ -5742,7 +5743,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 5
   m_Sprite: {fileID: -4230181108591323607, guid: 62fb9f812e1e51945b9cb3982268e988, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -5781,9 +5782,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1db0ef9e92544394d82ccac8ceb2d283, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 673797652}
-  speed: 1.2
   isChasing: 0
+  anim: {fileID: 1296383644}
 --- !u!58 &1296383643
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -5820,6 +5820,28 @@ CircleCollider2D:
   m_CompositeOrder: 0
   m_Offset: {x: 0.7923794, y: 0}
   m_Radius: 3.3116455
+--- !u!95 &1296383644
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1296383637}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 589ba43cec6c5d649a28ef2537f5ca11, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1319443619
 GameObject:
   m_ObjectHideFlags: 0

@@ -9,6 +9,7 @@ public class Enemy_Movement : MonoBehaviour
     private int facingDirection = 1;
     private float speed = 1.2f;
     public bool isChasing = false;
+    public Animator anim;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -35,9 +36,15 @@ public class Enemy_Movement : MonoBehaviour
         }
         
     }
+    
+    void FixedUpdate(){
+        // Update animator parameters
+        anim.SetFloat("horizontal", Mathf.Abs(rb.linearVelocity.x)); // Use Mathf.Abs for positive values
+        anim.SetFloat("vertical", Mathf.Abs(rb.linearVelocity.y));
+    }
 
     // Flip the enemy sprite to face the player
-    private void Flip()
+    void Flip()
     {
         facingDirection *= -1;
         transform.localScale = new Vector3(facingDirection, 1, 1);
