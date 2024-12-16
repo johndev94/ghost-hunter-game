@@ -6,6 +6,11 @@ public class Enemy_Combat : MonoBehaviour
 {
     public PlayerHealth playerHealth;
     public float damage = 10f;
+    public Transform attackPoint;
+    public float weaponRange;
+
+    // Checks if the player is in range of the enemy
+    public LayerMask playerLayer;
 
     void OnCollisionEnter2D(Collision2D collision)
     {
@@ -20,11 +25,22 @@ public class Enemy_Combat : MonoBehaviour
                 playerHealth.TakeDamage(damage);  
             }
 
+            // Get the current health of the player and display it
             float playerHealthCurrent = playerHealth.GetCurrentHealth();
-
             UnityEngine.Debug.Log("Player health: " + playerHealthCurrent);
-
-
         }
+    }
+
+    public void OnAttack()
+    {
+        Collider2D[] hits = Physics2D.OverlapCircleAll(attackPoint.position, weaponRange, playerLayer);
+        if(hits.Length > 0)
+        {
+            UnityEngine.Debug.Log("Player is in range!");
+            
+            hits[0].GetComponent<PlayerHealth>().TakeDamage(damage);
+        }
+
+        UnityEngine.Debug.Log("Enemy is attacking!");
     }
 }
