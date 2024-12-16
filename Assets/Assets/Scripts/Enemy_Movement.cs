@@ -10,6 +10,7 @@ public class Enemy_Movement : MonoBehaviour
 
     private int facingDirection = 1;
     private float speed = 1.2f;
+    public float attackRange = 2;
 
     public Animator anim;
 
@@ -30,18 +31,35 @@ public class Enemy_Movement : MonoBehaviour
         // Check if the player is in the trigger area
         if (enemyState == EnemyState.Chasing)
         {
-            // Check if the player is to the right of the enemy and the enemy is facing left or visa versa, then flip the enemy
-            if(player.position.x < transform.position.x && facingDirection == 1 ||
-                player.position.x > transform.position.x && facingDirection == -1){
-                    Flip();
-            };
-            
-            // Gets the difference between the player's position and the enemy's position, then normalizes it.
-            Vector2 direction = (player.position - transform.position).normalized;
-            // So the enemy moves towards the player, we multiply the normalized direction by a speed value
-            rb.linearVelocity = direction * speed; // Move the enemy towards the player 
+            Chase();
         }
-        
+        else if(enemyState == EnemyState.Attacking)
+        {
+            rb.linearVelocity = Vector2.zero; // Stop the enemy when player exits the trigger
+        }
+    }
+
+    void Chase(){
+        if(Vector2.Distance(transform.position, player.transform.position) <= attackRange)
+        {
+            ChangeState(EnemyState.Attacking);
+        }
+
+        // Flip Logic
+        // Check if the player is to the right of the enemy and the enemy is facing left or visa versa, then flip the enemy
+        else if(player.position.x < transform.position.x && facingDirection == 1 ||
+        player.position.x > transform.position.x && facingDirection == -1)
+        {
+            Flip();
+        };
+            
+
+        // Chase Logic
+        // Gets the difference between the player's position and the enemy's position, then normalizes it.
+        Vector2 direction = (player.position - transform.position).normalized;
+        // So the enemy moves towards the player, we multiply the normalized direction by a speed value
+        rb.linearVelocity = direction * speed; // Move the enemy towards the player 
+
     }
     
     void FixedUpdate(){
@@ -56,7 +74,7 @@ public class Enemy_Movement : MonoBehaviour
         facingDirection *= -1;
         transform.localScale = new Vector3(facingDirection, 1, 1);
     }
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerStay2D(Collider2D collision)
     {
         if (collision.gameObject.tag == "Player")
         {
@@ -92,6 +110,23 @@ public class Enemy_Movement : MonoBehaviour
         
     }
 
+    private void OnAttack(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "Player")
+        {
+
+            rb.linearVelocity = Vector2.zero; // Stop the enemy when player exits the trigger
+
+            // Change the enemy state to idle
+            ChangeState(EnemyState.Attacking);
+
+            // Test what the enemy state is on exit
+            UnityEngine.Debug.Log("Enemy state on attack: " + enemyState);
+
+        }
+        
+    }
+
 
     // This method changes activates one the enemy states changes and deactivates the other and creates a new state.. apparently useful later on
     // this is called on OnTriggerEnter2D and OnTriggerExit2D
@@ -104,6 +139,9 @@ public class Enemy_Movement : MonoBehaviour
         else if(enemyState == EnemyState.Chasing){
             anim.SetBool("isChasing", false);
         }
+        else if(enemyState == EnemyState.Attacking){
+            anim.SetBool("isAttacking", false);
+        }
 
         // Updates the new enemy state
         enemyState = newState;
@@ -114,13 +152,18 @@ public class Enemy_Movement : MonoBehaviour
         }
         else if(enemyState == EnemyState.Chasing){
             anim.SetBool("isChasing", true);
+        }
+        else if(enemyState == EnemyState.Attacking){
+            anim.SetBool("isAttacking", true);
+    
+        }
     }
-}
 }
 public enum EnemyState
 {
     Idle,
     Chasing,
+    Attacking
 }
 
 
