@@ -1,5 +1,3 @@
-using System.Diagnostics;
-using System.Globalization;
 using UnityEngine;
 
 public class Enemy_Movement : MonoBehaviour
@@ -13,6 +11,12 @@ public class Enemy_Movement : MonoBehaviour
     public float attackRange = 2;
 
     public Animator anim;
+
+    // Attack-related variables
+    public Transform attackPoint;  // Ensure this is assigned in the inspector
+    public float weaponRange = 1f; // Ensure this is assigned in the inspector
+    public LayerMask playerLayer;  // Ensure this is assigned in the inspector
+    public float damage = 10f;     // Ensure this is assigned in the inspector
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -29,40 +33,43 @@ public class Enemy_Movement : MonoBehaviour
     void Update()
     {
         // Check if the player is in the trigger area
-        if (enemyState == EnemyState.Chasing)
+        if (player != null) // Ensure player reference is valid before moving
         {
-            Chase();
-        }
-        else if(enemyState == EnemyState.Attacking)
-        {
-            rb.linearVelocity = Vector2.zero; // Stop the enemy when player exits the trigger
+            if (enemyState == EnemyState.Chasing)
+            {
+                Chase();
+            }
+            else if (enemyState == EnemyState.Attacking)
+            {
+                rb.linearVelocity = Vector2.zero; // Stop the enemy when player exits the trigger
+            }
         }
     }
 
-    void Chase(){
-        if(Vector2.Distance(transform.position, player.transform.position) <= attackRange)
+    void Chase()
+    {
+        if (Vector2.Distance(transform.position, player.transform.position) <= attackRange)
         {
             ChangeState(EnemyState.Attacking);
         }
 
         // Flip Logic
-        // Check if the player is to the right of the enemy and the enemy is facing left or visa versa, then flip the enemy
-        else if(player.position.x < transform.position.x && facingDirection == 1 ||
+        // Check if the player is to the right of the enemy and the enemy is facing left or vice versa, then flip the enemy
+        else if (player.position.x < transform.position.x && facingDirection == 1 ||
         player.position.x > transform.position.x && facingDirection == -1)
         {
             Flip();
         };
-            
 
         // Chase Logic
         // Gets the difference between the player's position and the enemy's position, then normalizes it.
         Vector2 direction = (player.position - transform.position).normalized;
         // So the enemy moves towards the player, we multiply the normalized direction by a speed value
         rb.linearVelocity = direction * speed; // Move the enemy towards the player 
-
     }
-    
-    void FixedUpdate(){
+
+    void FixedUpdate()
+    {
         // Update animator parameters
         anim.SetFloat("horizontal", Mathf.Abs(rb.linearVelocity.x)); // Use Mathf.Abs for positive values
         anim.SetFloat("vertical", Mathf.Abs(rb.linearVelocity.y));
@@ -74,12 +81,13 @@ public class Enemy_Movement : MonoBehaviour
         facingDirection *= -1;
         transform.localScale = new Vector3(facingDirection, 1, 1);
     }
+
     private void OnTriggerStay2D(Collider2D collision)
     {
         if (collision.gameObject.tag == "Player")
         {
             // Set the player reference to the player object
-            if(player == null)
+            if (player == null)
             {
                 player = collision.transform;
             }
@@ -90,95 +98,107 @@ public class Enemy_Movement : MonoBehaviour
             // Test what the enemy state is on enter
             UnityEngine.Debug.Log("Enemy state on trigger: " + enemyState);
         }
-
     }
 
     private void OnTriggerExit2D(Collider2D collision)
     {
         if (collision.gameObject.tag == "Player")
         {
-
             rb.linearVelocity = Vector2.zero; // Stop the enemy when player exits the trigger
 
             // Change the enemy state to idle
             ChangeState(EnemyState.Idle);
 
+            // Clear the player reference when the player leaves the trigger
+            player = null;
+
             // Test what the enemy state is on exit
             UnityEngine.Debug.Log("Enemy state on exit trigger: " + enemyState);
-
         }
-        
     }
 
-    private void OnAttack(Collider2D collision)
+    public void Attack()
     {
-        if (collision.gameObject.tag == "Player")
+        // Ensure that the attack point, player layer, and other variables are assigned
+        if (attackPoint == null || playerLayer == 0)
         {
-
-            rb.linearVelocity = Vector2.zero; // Stop the enemy when player exits the trigger
-
-            // Change the enemy state to idle
-            ChangeState(EnemyState.Attacking);
-
-            // Test what the enemy state is on exit
-            UnityEngine.Debug.Log("Enemy state on attack: " + enemyState);
-
+            UnityEngine.Debug.LogError("Attack point or player layer not assigned.");
+            return;
         }
-        
+
+        // Check if player reference is valid before attacking
+        if (player != null)
+        {
+            Collider2D[] hits = Physics2D.OverlapCircleAll(attackPoint.position, weaponRange, playerLayer);
+
+            if (hits.Length > 0)
+            {
+                UnityEngine.Debug.Log("Player is in range!");
+
+                // Check if the hit object has the PlayerHealth component before applying damage
+                PlayerHealth playerHealth = hits[0].GetComponent<PlayerHealth>();
+                if (playerHealth != null)
+                {
+                    playerHealth.TakeDamage(damage);
+                    UnityEngine.Debug.Log("Player took damage!");
+                }
+                else
+                {
+                    UnityEngine.Debug.LogWarning("PlayerHealth component not found on hit object.");
+                }
+            }
+            else
+            {
+                UnityEngine.Debug.Log("No players in range.");
+            }
+        }
+        else
+        {
+            UnityEngine.Debug.LogWarning("Player reference is null, cannot attack.");
+        }
+
+        UnityEngine.Debug.Log("Enemy is attacking!");
     }
 
-
-    // This method changes activates one the enemy states changes and deactivates the other and creates a new state.. apparently useful later on
-    // this is called on OnTriggerEnter2D and OnTriggerExit2D
+    // This method changes the enemy state and activates the corresponding animation
     public void ChangeState(EnemyState newState)
     {
         // Exit the current animation state
-        if(enemyState == EnemyState.Idle){
+        if (enemyState == EnemyState.Idle)
+        {
             anim.SetBool("isIdle", false);
         }
-        else if(enemyState == EnemyState.Chasing){
+        else if (enemyState == EnemyState.Chasing)
+        {
             anim.SetBool("isChasing", false);
         }
-        else if(enemyState == EnemyState.Attacking){
+        else if (enemyState == EnemyState.Attacking)
+        {
             anim.SetBool("isAttacking", false);
         }
 
         // Updates the new enemy state
         enemyState = newState;
 
-        // Update the new animation state, this checks what the new state is and activates the corresponding bool
-        if(enemyState == EnemyState.Idle){
+        // Update the new animation state
+        if (enemyState == EnemyState.Idle)
+        {
             anim.SetBool("isIdle", true);
         }
-        else if(enemyState == EnemyState.Chasing){
+        else if (enemyState == EnemyState.Chasing)
+        {
             anim.SetBool("isChasing", true);
         }
-        else if(enemyState == EnemyState.Attacking){
+        else if (enemyState == EnemyState.Attacking)
+        {
             anim.SetBool("isAttacking", true);
-    
         }
     }
 }
+
 public enum EnemyState
 {
     Idle,
     Chasing,
     Attacking
 }
-
-
-
-// Check if the player is to the right of the enemy and the enemy is facing left
-            // if(player.position.x > transform.position.x && facingDirection == -1)
-            // {
-            //     // Flip the enemy sprite to face the player
-            //     transform.localScale = new Vector3(1, 1, 1);
-            //     facingDirection = 1;
-            // }
-            // // Check if the player is to the left of the enemy and the enemy is facing right
-            // else if(player.position.x < transform.position.x && facingDirection == 1)
-            // {
-            //     // Flip the enemy sprite to face the player
-            //     transform.localScale = new Vector3(-1, 1, 1);
-            //     facingDirection = -1;
-            // }
