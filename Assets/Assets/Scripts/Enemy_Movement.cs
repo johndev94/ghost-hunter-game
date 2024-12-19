@@ -7,6 +7,7 @@ public class Enemy_Movement : MonoBehaviour
     
     public float attackRange = 2;
     public float weaponRange = 1f;
+
     public float damage = 10f;   
     public float playerDetectRange = 5f;
     public Animator anim;
