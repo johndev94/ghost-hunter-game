@@ -15,7 +15,7 @@ public class Enemy_Movement : MonoBehaviour
     public Transform attackPoint; 
     public LayerMask playerLayer; 
     public Transform detectionPoint;
-    public float attackCooldown = 2f;
+    public float attackCooldown = 1f;
 
     private float attackCooldownTimer = 0f;
     private float speed = 1.2f;
@@ -105,7 +105,7 @@ public class Enemy_Movement : MonoBehaviour
                 attackCooldownTimer = attackCooldown;
                 ChangeState(EnemyState.Attacking);
             }
-            else if (Vector2.Distance(transform.position, player.transform.position) > attackRange)
+            else if (Vector2.Distance(transform.position, player.transform.position) > attackRange && enemyState != EnemyState.Attacking)
             {
                 ChangeState(EnemyState.Chasing);
             }
