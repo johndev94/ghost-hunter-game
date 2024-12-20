@@ -1,8 +1,15 @@
 fileFormatVersion: 2
 guid: 9fcd727ac0a07a04ca442df5195c4f3b
+AssetOrigin:
+  serializedVersion: 1
+  productId: 177827
+  packageName: Adventure RPG Essentials Music Pack
+  packageVersion: 1.1
+  assetPath: Assets/Adventure RPG Essentials Music Pack v1.1/WAV/02a Town Theme.wav
+  uploadId: 617904
 AudioImporter:
   externalObjects: {}
-  serializedVersion: 7
+  serializedVersion: 8
   defaultSettings:
     serializedVersion: 2
     loadType: 0
@@ -11,7 +18,7 @@ AudioImporter:
     compressionFormat: 1
     quality: 1
     conversionMode: 0
-    preloadAudioData: 0
+    preloadAudioData: 1
   platformSettingOverrides: {}
   forceToMono: 0
   normalize: 1
@@ -21,10 +28,3 @@ AudioImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 177827
-  packageName: Adventure RPG Essentials Music Pack
-  packageVersion: 1.1
-  assetPath: Assets/Adventure RPG Essentials Music Pack v1.1/WAV/02a Town Theme.wav
-  uploadId: 617904

@@ -24,6 +24,9 @@ public class Enemy_Movement : MonoBehaviour
     private Transform player;
     private EnemyState enemyState;
 
+    private CombatMusicManager musicManager;
+
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -31,7 +34,7 @@ public class Enemy_Movement : MonoBehaviour
         // This auto connects rb to the Rigidbody2D component attached to the GameObject, useful for spawning enemies
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
-
+        musicManager = FindFirstObjectByType<CombatMusicManager>(); // Finds the CombatMusicManager in the scene
         // Set the enemy state to idle
         ChangeState(EnemyState.Idle);
     }
@@ -165,38 +168,45 @@ public class Enemy_Movement : MonoBehaviour
 
     // This method changes the enemy state and activates the corresponding animation
     public void ChangeState(EnemyState newState)
+{
+    // Exit the current animation state
+    if (enemyState == EnemyState.Idle)
     {
-        // Exit the current animation state
-        if (enemyState == EnemyState.Idle)
-        {
-            anim.SetBool("isIdle", false);
-        }
-        else if (enemyState == EnemyState.Chasing)
-        {
-            anim.SetBool("isChasing", false);
-        }
-        else if (enemyState == EnemyState.Attacking)
-        {
-            anim.SetBool("isAttacking", false);
-        }
-
-        // Updates the new enemy state
-        enemyState = newState;
-
-        // Update the new animation state
-        if (enemyState == EnemyState.Idle)
-        {
-            anim.SetBool("isIdle", true);
-        }
-        else if (enemyState == EnemyState.Chasing)
-        {
-            anim.SetBool("isChasing", true);
-        }
-        else if (enemyState == EnemyState.Attacking)
-        {
-            anim.SetBool("isAttacking", true);
-        }
+        anim.SetBool("isIdle", false);
+        if (musicManager != null) musicManager.StopCombatMusic(); // Stop combat music when idle
     }
+    else if (enemyState == EnemyState.Chasing)
+    {
+        anim.SetBool("isChasing", false);
+    }
+    else if (enemyState == EnemyState.Attacking)
+    {
+        anim.SetBool("isAttacking", false);
+        if (musicManager != null) musicManager.PlayCombatMusic(); // Start combat music on attack
+    }
+    anim.SetBool("isIdle", true);
+
+    // Updates the new enemy state
+    enemyState = newState;
+
+    // Update the new animation state
+    if (enemyState == EnemyState.Idle)
+    {
+        anim.SetBool("isIdle", true);
+        UnityEngine.Debug.Log("Enemy is idle.");
+    }
+    else if (enemyState == EnemyState.Chasing)
+    {
+        anim.SetBool("isChasing", true);
+        UnityEngine.Debug.Log("Enemy is chasing.");
+    }
+    else if (enemyState == EnemyState.Attacking)
+    {
+        anim.SetBool("isAttacking", true);
+        UnityEngine.Debug.Log("Enemy is attacking.");
+    }
+}
+
 }
 
 public enum EnemyState
