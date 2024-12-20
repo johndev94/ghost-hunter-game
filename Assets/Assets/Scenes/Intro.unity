@@ -1255,6 +1255,8 @@ GameObject:
   - component: {fileID: 283605606}
   - component: {fileID: 283605608}
   - component: {fileID: 283605607}
+  - component: {fileID: 283605610}
+  - component: {fileID: 283605609}
   m_Layer: 0
   m_Name: MusicManager
   m_TagString: Untagged
@@ -1495,6 +1497,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d732d3f477e220469eb61d6c34e7ecf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &283605609
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 283605603}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb329622609dbb64d93129a191508bb3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  backgroundMusic: {fileID: 0}
+  combatMusic: {fileID: 0}
+  transitionSpeed: 1
+--- !u!114 &283605610
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 283605603}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb329622609dbb64d93129a191508bb3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  backgroundMusic: {fileID: 0}
+  combatMusic: {fileID: 0}
+  transitionSpeed: 1
 --- !u!1 &284421054
 GameObject:
   m_ObjectHideFlags: 0
