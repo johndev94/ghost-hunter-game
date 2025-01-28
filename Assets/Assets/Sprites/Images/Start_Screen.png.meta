@@ -148,7 +148,11 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
+<<<<<<< Updated upstream:Assets/Assets/Sprites/Images/Start_Screen.png.meta
       Start_Screen_0: -193794965269303177
+=======
+      spritesheet_0: 8020143640844766479
+>>>>>>> Stashed changes:Assets/Assets/Sprites/spritesheet.png.meta
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
