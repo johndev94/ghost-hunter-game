@@ -5508,6 +5508,7 @@ GameObject:
   - component: {fileID: 673797656}
   - component: {fileID: 673797657}
   - component: {fileID: 673797658}
+  - component: {fileID: 673797659}
   m_Layer: 3
   m_Name: Player
   m_TagString: Player
@@ -5665,6 +5666,7 @@ MonoBehaviour:
   facingDirection: 1
   rb: {fileID: 673797653}
   anim: {fileID: 673797658}
+  player_Combat: {fileID: 0}
 --- !u!114 &673797656
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5721,6 +5723,20 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &673797659
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 673797650}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01c8bb7e75f9c554fbdaea0c332f1ea8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  anim: {fileID: 673797658}
+  cooldown: 1.5
 --- !u!1 &783067174
 GameObject:
   m_ObjectHideFlags: 0
