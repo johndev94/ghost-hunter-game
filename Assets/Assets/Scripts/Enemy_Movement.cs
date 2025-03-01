@@ -42,23 +42,27 @@ public class Enemy_Movement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        CheckForPlayer();
-        if(attackCooldownTimer > 0)
+        if(enemyState != EnemyState.Knockback)
         {
-            attackCooldownTimer -= Time.deltaTime;
-        }
-        // Check if the player is in the trigger area
-        if (player != null) // Ensure player reference is valid before moving
-        {
-            if (enemyState == EnemyState.Chasing)
+            CheckForPlayer();
+            if(attackCooldownTimer > 0)
             {
-                Chase();
+                attackCooldownTimer -= Time.deltaTime;
             }
-            else if (enemyState == EnemyState.Attacking)
+            // Check if the player is in the trigger area
+            if (player != null) // Ensure player reference is valid before moving
             {
-                rb.linearVelocity = Vector2.zero; // Stop the enemy when player exits the trigger
+                if (enemyState == EnemyState.Chasing)
+                {
+                    Chase();
+                }
+                else if (enemyState == EnemyState.Attacking)
+                {
+                    rb.linearVelocity = Vector2.zero; // Stop the enemy when player exits the trigger
+                }
             }
         }
+        
     }
 
     void Chase()
@@ -213,5 +217,6 @@ public enum EnemyState
 {
     Idle,
     Chasing,
-    Attacking
+    Attacking,
+    Knockback
 }

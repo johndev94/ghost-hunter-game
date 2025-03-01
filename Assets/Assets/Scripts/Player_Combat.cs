@@ -12,6 +12,9 @@ public class Player_Combat : MonoBehaviour
     public Animator anim;
     public float cooldown = 13f;
     private float timer;
+    public float knockbackForce = 10f;
+    public float knockbackTime = 0.15f;
+    public float stunTime = 0.5f;
 
 
     public void Update()
@@ -41,6 +44,7 @@ public class Player_Combat : MonoBehaviour
             if(enemies.Length > 0)
             {
                 enemies[0].GetComponent<Enemy_Health>().ChangeHealth(-damage);
+                enemies[0].GetComponent<Enemy_Knockback>().Knockback(transform, knockbackForce, knockbackTime, stunTime);
             }
     }
 
