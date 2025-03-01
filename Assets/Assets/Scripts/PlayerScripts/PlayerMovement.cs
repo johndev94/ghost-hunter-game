@@ -50,7 +50,7 @@ public class PlayerMovement : MonoBehaviour
             }
 
             // Apply velocity
-            rb.linearVelocity = new Vector2(horizontal, vertical) * speed;
+            rb.linearVelocity = new Vector2(horizontal, vertical) *  StatsManager.Instance.speed;
         }
         
     }
